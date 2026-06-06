@@ -1,8 +1,5 @@
-import sys
 from colorama import Fore, Style, init
 
-# Strip ANSI on Windows terminals that don't support it natively;
-# colorama handles the conversion so we always get colour output.
 init(autoreset=True)
 
 
@@ -14,7 +11,7 @@ def banner():
  | |_| | |_| | | | |  _ <| |___/ ___ \ |___|  _  |
   \___/ \___/  |_| |_| \_\_____/_/   \_\____|_| |_|
 """ + Style.RESET_ALL)
-    print(Fore.WHITE + "  Cold Outreach Pipeline  |  Apollo -> Prospeo -> Brevo\n" + Style.RESET_ALL)
+    print(Fore.WHITE + "  Cold Outreach Pipeline  |  Apollo -> Hunter -> Brevo\n" + Style.RESET_ALL)
 
 
 def stage(num: int, name: str):

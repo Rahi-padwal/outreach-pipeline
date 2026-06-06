@@ -11,7 +11,7 @@ Auth: api_key query parameter.
 import time
 import requests
 from config import HUNTER_API_KEY
-from utils.logger import info, success, warning, error
+from utils.logger import info, warning, error
 
 BASE_URL = "https://api.hunter.io/v2"
 
@@ -44,7 +44,7 @@ def find_contacts(domain: str, max_per_domain: int = 5) -> list[dict]:
             params={
                 "domain": domain,
                 "api_key": HUNTER_API_KEY,
-                "limit": 20,       # fetch extra so filtering still yields enough
+                "limit": 10,       # free plan cap; paid plans allow more
                 "type": "personal",
             },
             timeout=15,

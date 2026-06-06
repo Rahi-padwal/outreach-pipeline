@@ -14,7 +14,7 @@ Base URL: https://api.apollo.io/api/v1  (note: /api/v1 not /v1)
 import time
 import requests
 from config import APOLLO_API_KEY
-from utils.logger import info, success, warning, error
+from utils.logger import info, success, error
 
 BASE_URL = "https://api.apollo.io/api/v1"
 
@@ -118,7 +118,7 @@ def find_lookalike_companies(seed_domain: str, limit: int = 10) -> list[str]:
 
 
 def _run_org_search(payload: dict, seed_domain: str, seed_name: str, limit: int) -> list[str]:
-    """Execute one Apollo /mixed_companies/search POST and return a domain list."""
+    """Execute one Apollo /organizations/search POST and return a domain list."""
     try:
         resp = requests.post(
             f"{BASE_URL}/organizations/search",
