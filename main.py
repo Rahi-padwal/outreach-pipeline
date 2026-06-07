@@ -13,7 +13,7 @@ import config
 from stages.apollo import find_lookalike_companies
 from stages.hunter import find_contacts
 from stages.brevo import send_outreach_emails
-from utils.logger import banner, stage, info, success, warning, error
+from utils.logger import stage, info, success, warning, error
 from utils.checkpoint import review_contacts
 
 
@@ -26,7 +26,6 @@ def get_seed_domain() -> str:
 
 
 def main():
-    banner()
     config.validate()
 
     seed_domain = get_seed_domain()
