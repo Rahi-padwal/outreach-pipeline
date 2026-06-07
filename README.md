@@ -1,6 +1,8 @@
-# Outreach Pipeline
+# outreach-pipeline
 
-A fully automated cold-outreach CLI. Give it one company domain — it finds 10 lookalike companies, pulls verified decision-maker emails, and sends personalised outreach. All in under 2 minutes.
+I built this to scratch my own itch. Cold outreach manually is painful — finding similar companies, tracking down who to email, copy-pasting names into templates. This CLI does all of that in one run.
+
+You give it one domain. It figures out the rest.
 
 ```
 python main.py
@@ -9,108 +11,63 @@ Enter seed domain: stripe.com
 
 ---
 
-## How it works
+## What actually happens
 
-```
-seed domain
-    │
-    ▼
-Stage 1 — Apollo.io
-    Enrich seed company → find 10 lookalike companies by industry, size, keywords
-    │
-    ▼
-Stage 2+3 — Hunter.io
-    For each company → find C-suite / VP / Director contacts with verified emails
-    │
-    ▼
-Checkpoint
-    Review every contact before anything sends
-    │
-    ▼
-Stage 4 — Brevo
-    Send personalised email to each contact (name, company, title)
-```
+**Step 1** — Apollo.io gets asked about your seed company. Industry, size, keywords. Then it finds 10 companies in the same space.
 
----
+**Step 2** — For each of those 10 companies, Hunter.io pulls the senior people there — CEOs, VPs, Directors — along with their verified work emails. No LinkedIn needed.
 
-## Stack
+**Step 3** — Before anything sends, you see a full table of every contact. You have to type `yes` to proceed. Nothing fires automatically.
 
-| Stage | API | What it does |
-|-------|-----|-------------|
-| 1 | Apollo.io | Finds lookalike companies from a seed domain |
-| 2+3 | Hunter.io | Finds decision makers + verified work emails |
-| 4 | Brevo | Sends personalised transactional emails |
+**Step 4** — Brevo sends a personalised email to each person. Different subject, their name, their company, their title.
+
+The whole thing runs in about 2 minutes.
 
 ---
 
 ## Setup
 
-**1. Clone and install**
 ```bash
-git clone https://github.com/yourusername/outreach-pipeline
+git clone https://github.com/Rahi-padwal/outreach-pipeline
 cd outreach-pipeline
 pip install -r requirements.txt
-```
-
-**2. Add your API keys**
-```bash
 cp .env.example .env
 ```
 
-Fill in `.env`:
+Fill in `.env` with your keys:
 ```
-APOLLO_API_KEY=your_key
-HUNTER_API_KEY=your_key
-BREVO_API_KEY=your_key
-SENDER_EMAIL=you@yourdomain.com
-SENDER_NAME=Your Name
+APOLLO_API_KEY=
+HUNTER_API_KEY=
+BREVO_API_KEY=
+SENDER_EMAIL=
+SENDER_NAME=
 ```
 
-**3. Run**
+Then just run it:
 ```bash
 python main.py
 ```
 
 ---
 
-## Project structure
+## APIs used
+
+- **Apollo.io** — company discovery (free tier works)
+- **Hunter.io** — email finding (25 searches/month free)
+- **Brevo** — email sending (300/day free)
+
+---
+
+## Structure
 
 ```
-outreach-pipeline/
-├── main.py              # Orchestrates all 4 stages
-├── config.py            # Loads and validates env vars
+├── main.py          — runs the pipeline start to finish
+├── config.py        — loads env vars, validates keys on startup
 ├── stages/
-│   ├── apollo.py        # Stage 1: lookalike company discovery
-│   ├── hunter.py        # Stage 2+3: contacts + verified emails
-│   └── brevo.py         # Stage 4: personalised email sending
-├── utils/
-│   ├── logger.py        # Coloured terminal output
-│   └── checkpoint.py    # Safety review before emails fire
-├── .env.example
-└── requirements.txt
+│   ├── apollo.py    — finds lookalike companies
+│   ├── hunter.py    — finds contacts + emails
+│   └── brevo.py     — sends the emails
+└── utils/
+    ├── logger.py    — coloured terminal output
+    └── checkpoint.py — the "are you sure?" gate
 ```
-
----
-
-## Safety
-
-A checkpoint table is shown before any email is sent — listing every contact's name, title, company, and email. Nothing fires until you explicitly type `yes`.
-
-```
-  #    Name              Title                  Company    Email
-  1    John Smith        Chief Executive Officer  Acme     john@acme.com
-  2    Jane Doe          VP of Engineering        Acme     jane@acme.com
-  ...
-
-  Proceed? Type 'yes' to send:
-```
-
----
-
-## API keys
-
-| Service | Free tier |
-|---------|-----------|
-| [Apollo.io](https://apollo.io) | Organization search + enrich |
-| [Hunter.io](https://hunter.io) | 25 domain searches/month |
-| [Brevo](https://brevo.com) | 300 emails/day |
